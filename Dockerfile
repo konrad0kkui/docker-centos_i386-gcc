@@ -2,20 +2,25 @@ FROM oberthur/docker-centos_i386
 
 # Java Version
 ENV JAVA_VERSION_MAJOR=8 \
-    JAVA_VERSION_MINOR=121 \
-    JAVA_VERSION_BUILD=13 \
+    JAVA_VERSION_MINOR=131 \
+    JAVA_VERSION_BUILD=11 \
     JAVA_PACKAGE=jdk \
+    JAVA_PLATFORM=linux-i586.tar.gz \
     JAVA_HOME=/opt/jdk \
     PATH=${PATH}:/opt/jdk/bin
 
 LABEL author="Tomasz Malinowski <t.malinowski@oberthur.com>"
 LABEL version="docker-centos_i386-gcc"
 
-RUN yum -y update \
-    && yum -y install yum-plugin-ovl tar unzip gcc vim mc git epel-release
+RUN yum -y update
 
-RUN curl -kLOH "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
-    http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/e9e7ea248e2c4826b92b3f075a80e441/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-i586.tar.gz \
+RUN yum -y install yum-plugin-ovl epel-release
+
+RUN yum -y install tar unzip wget gcc vim git jq
+
+RUN wget -c -O "${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-${JAVA_PLATFORM}" \
+        --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+        "http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/d54c1d3a095b4ff2b6607d096fa80163/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-${JAVA_PLATFORM}" \
     && tar xfv ${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-i586.tar.gz -C /opt \
     && rm ${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-i586.tar.gz \
     && ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} /opt/jdk \
@@ -48,3 +53,4 @@ RUN curl -kLOH "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=ac
 # clean up
     && rm -rf /var/cache/yum/* \
     && yum clean all
+
