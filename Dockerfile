@@ -16,7 +16,7 @@ RUN yum -y update
 
 RUN yum -y install yum-plugin-ovl epel-release
 
-RUN yum -y install tar unzip wget gcc vim git jq
+RUN yum -y install tar unzip wget gcc vim git jq pcre-devel openssl-devel
 
 RUN wget -c -O "${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-${JAVA_PLATFORM}" \
         --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" \
